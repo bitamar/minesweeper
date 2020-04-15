@@ -1,0 +1,32 @@
+label.number-input {
+  display: inline-block;
+  position: relative;
+
+  input[type='number'] {
+    // Remove the spinner in webkit and ff.
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    -moz-appearance: textfield;
+
+    width: 40px;
+    text-align: right;
+    font-family: digital-7;
+    font-size: 30px;
+    color: red;
+    background: black;
+    padding: 6px;
+  }
+
+  &:after {
+    content: '888';
+    font-family: digital-7;
+    color: rgba(200, 0, 0, 0.3);
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 30px;
+  }
+}

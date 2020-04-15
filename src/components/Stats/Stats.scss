@@ -1,0 +1,21 @@
+section.stats {
+  & > * {
+    vertical-align: bottom;
+    margin-left: 20px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .alert {
+    display: inline-block;
+    background-color: white;
+    height: 43px;
+    line-height: 43px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    width: 120px;
+    text-align: center;
+  }
+}
