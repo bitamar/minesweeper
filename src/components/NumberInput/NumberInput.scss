@@ -13,7 +13,7 @@ label.number-input {
 
     width: 40px;
     text-align: right;
-    font-family: digital-7;
+    font-family: digital-7, monospace;
     font-size: 30px;
     color: red;
     background: black;
@@ -22,10 +22,10 @@ label.number-input {
 
   &:after {
     content: '888';
-    font-family: digital-7;
+    font-family: digital-7, monospace;
     color: rgba(200, 0, 0, 0.3);
     position: absolute;
-    bottom: 8px;
+    bottom: 6.4px;
     right: 8px;
     font-size: 30px;
   }

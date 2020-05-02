@@ -1,7 +1,7 @@
 import { CELL_EMPTY, CELL_MINE } from '../Cell/Cell';
 
 // Run a callback on non-mine neighbors of a cell.
-function neigbors(board, i, j, cellFn) {
+function neighbors(board, i, j, cellFn) {
   [-1, 0, 1].forEach((deltaI) => {
     [-1, 0, 1].forEach((deltaJ) => {
       if (!deltaI && !deltaJ) return;
@@ -20,7 +20,7 @@ function neigbors(board, i, j, cellFn) {
 
 // Create new board with random mines.
 export function initBoard(width, height, mines) {
-  const arrayFillMap = (length, map) => Array(length).fill().map(map);
+  const arrayFillMap = (length, map) => Array(length).fill(null).map(map);
 
   const board = arrayFillMap(height, () =>
     arrayFillMap(width, () => ({
@@ -41,7 +41,7 @@ export function initBoard(width, height, mines) {
       if (board[i][j].value !== CELL_MINE) {
         board[i][j].value = CELL_MINE;
 
-        neigbors(board, i, j, (cell) => {
+        neighbors(board, i, j, (cell) => {
           // eslint-disable-next-line no-param-reassign
           cell.value += 1;
         });
@@ -90,7 +90,7 @@ export function floodEmptyCells(board, initI, initJ) {
 
     newBoard[i][j].pressed = true;
 
-    neigbors(newBoard, i, j, (neighbor, neighborI, neighborJ) => {
+    neighbors(newBoard, i, j, (neighbor, neighborI, neighborJ) => {
       if (neighbor.flagged) return;
 
       // Reveal cell neighbors.
