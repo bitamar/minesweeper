@@ -11,7 +11,7 @@ type Props = {
   flags: number;
   mines: number;
   xray: boolean;
-  setXray: (v: boolean) => void;
+  setXray: (xray: boolean) => void;
   alert: string;
 };
 export default function Stats({ flags, mines, xray, setXray, alert }: Props) {

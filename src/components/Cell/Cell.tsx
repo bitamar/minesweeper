@@ -15,8 +15,10 @@ type Props = {
   cell: TCell;
   xray: boolean;
   onClick: (event: React.MouseEvent) => void;
+  onMouseDown: (event: React.MouseEvent) => void;
+  onMouseUp: (event: React.MouseEvent) => void;
 };
-function Cell({ cell, xray, onClick }: Props) {
+function Cell({ cell, xray, onClick, onMouseDown, onMouseUp }: Props) {
   const { flagged, value, pressed } = cell;
 
   const symbol = () => {
@@ -45,7 +47,12 @@ function Cell({ cell, xray, onClick }: Props) {
   };
 
   return (
-    <button className={pressedClass()} onClick={onClick}>
+    <button
+      className={pressedClass()}
+      onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+    >
       {symbol()}
     </button>
   );

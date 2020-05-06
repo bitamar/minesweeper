@@ -11,11 +11,7 @@ import {
 
 import './Board.scss';
 
-export const GameState = Object.freeze({
-  ongoing: 'ongoing',
-  won: 'won',
-  lost: 'lost',
-});
+export type GameState = 'clicking' | 'ongoing' | 'won' | 'lost';
 
 type Props = {
   restartFlag: boolean;
@@ -26,8 +22,8 @@ type Props = {
   flags: number;
   setFlags: (flags: number) => void;
   setAlert: (alert: string) => void;
-  gameState: string;
-  setGameState: (state: string) => void;
+  gameState: GameState;
+  setGameState: (state: GameState) => void;
 };
 
 export default function Board({
@@ -59,7 +55,7 @@ export default function Board({
 
     switch (value) {
       case CELL_MINE:
-        setGameState(GameState.lost);
+        setGameState('lost');
         setBoard(setCell(board, c, true, null, false));
         setAlert('game over');
         break;
@@ -94,17 +90,27 @@ export default function Board({
     setBoard(boardNew);
     // Check if all mines are flagged correctly when all flags are used.
     if (flagsNew === mines && allMinesFlagged(boardNew)) {
-      setGameState(GameState.won);
+      setGameState('won');
       setAlert('game won');
     }
   };
 
   const renderCell = (c: TCoordinate) => {
     const onClick = (event: React.MouseEvent) => {
-      if (gameState !== GameState.ongoing) return;
+      if (gameState !== 'ongoing') return;
 
       if (event.shiftKey) toggleFlag(c);
       else pressCell(c);
+    };
+
+    const onMouseDown = (event: React.MouseEvent) => {
+      if (gameState !== 'ongoing' || event.shiftKey) return;
+      setGameState('clicking');
+    };
+
+    const onMouseUp = () => {
+      if (gameState !== 'clicking') return;
+      setGameState('ongoing');
     };
 
     return (
@@ -113,6 +119,8 @@ export default function Board({
         cell={board[c.row][c.cell]}
         xray={xray}
         onClick={onClick}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
       />
     );
   };

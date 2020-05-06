@@ -27,7 +27,7 @@ export default function () {
 
   // Track the game state (won | lost | ongoing), for the smiley on the
   // start button, and for locking the cells when game is over.
-  const [gameState, setGameState] = useState(GameState.ongoing);
+  const [gameState, setGameState] = useState<GameState>('ongoing');
 
   // For the "Superman mode".
   const [xray, setXray] = useState(false);
@@ -38,7 +38,7 @@ export default function () {
     setConfig(newConfig);
     setFlags(0);
     setAlert('');
-    setGameState(GameState.ongoing);
+    setGameState('ongoing');
   };
 
   return (
