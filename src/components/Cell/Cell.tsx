@@ -1,12 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './Cell.scss';
+
+export type TCell = {
+  flagged: boolean;
+  value: number;
+  pressed: boolean;
+};
 
 export const CELL_EMPTY = 0;
 export const CELL_MINE = -1;
 
-function Cell({ cell, xray, onClick }) {
+type Props = {
+  cell: TCell;
+  xray: boolean;
+  onClick: (event: React.MouseEvent) => void;
+};
+function Cell({ cell, xray, onClick }: Props) {
   const { flagged, value, pressed } = cell;
 
   const symbol = () => {
@@ -27,7 +37,9 @@ function Cell({ cell, xray, onClick }) {
   };
 
   const pressedClass = () => {
-    if (!pressed) return null;
+    // Returning undefined instead of empty string to avoid printing class=""
+    // on all cells.
+    if (!pressed) return undefined;
     if (value === CELL_MINE) return 'flat mine';
     return 'flat';
   };
@@ -38,15 +50,5 @@ function Cell({ cell, xray, onClick }) {
     </button>
   );
 }
-
-Cell.propTypes = {
-  cell: PropTypes.shape({
-    pressed: PropTypes.bool.isRequired,
-    value: PropTypes.number.isRequired,
-    flagged: PropTypes.bool.isRequired,
-  }).isRequired,
-  xray: PropTypes.bool.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
 
 export default Cell;

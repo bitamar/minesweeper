@@ -1,7 +1,10 @@
 // App renders the main game markup, and manages the global states.
 
 import React, { useState } from 'react';
-import RestartConfig, { initConfig } from '../RestartConfig/RestartConfig';
+import RestartConfig, {
+  TConfig,
+  initConfig,
+} from '../RestartConfig/RestartConfig';
 import Board, { GameState } from '../Board/Board';
 import Stats from '../Stats/Stats';
 
@@ -30,7 +33,7 @@ export default function () {
   const [xray, setXray] = useState(false);
 
   // Start a new game: Change restartFlag and reset other states.
-  const restart = (newConfig) => {
+  const restart = (newConfig: TConfig) => {
     setRestartFlag(!restartFlag);
     setConfig(newConfig);
     setFlags(0);
@@ -49,7 +52,6 @@ export default function () {
             xray={xray}
             setXray={setXray}
             alert={alert}
-            gameState={gameState}
           />
         </div>
       </header>

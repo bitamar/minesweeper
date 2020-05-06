@@ -1,13 +1,20 @@
 // Handles status messages and configs that can be changed without restarting.
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import NumberInput from '../NumberInput/NumberInput';
 import StickyButton from '../StickyButton/StickyButton';
 
 import './Stats.scss';
 
-export default function Stats({ flags, mines, xray, setXray, alert }) {
+type Props = {
+  flags: number;
+  mines: number;
+  xray: boolean;
+  setXray: (v: boolean) => void;
+  alert: string;
+};
+export default function Stats({ flags, mines, xray, setXray, alert }: Props) {
   const flagsRemaining = mines - flags;
 
   return (
@@ -20,14 +27,3 @@ export default function Stats({ flags, mines, xray, setXray, alert }) {
     </section>
   );
 }
-
-Stats.propTypes = {
-  // Flags in use count
-  flags: PropTypes.number.isRequired,
-  // Mines count
-  mines: PropTypes.number.isRequired,
-  xray: PropTypes.bool.isRequired,
-  setXray: PropTypes.func.isRequired,
-  // Display message
-  alert: PropTypes.string.isRequired,
-};

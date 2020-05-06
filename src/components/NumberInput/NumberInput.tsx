@@ -1,12 +1,19 @@
 // A "Seven segment" number input, either with onChange callback or disabled.
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './NumberInput.scss';
 
-function NumberInput({ name, label, value, onChange, min, max }) {
-  // Disable the input when there's no onChange.
+type Props = {
+  name: string;
+  label: string;
+  value: number;
+  onChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  min: number;
+  max: number;
+};
+function NumberInput({ name, label, value, onChange, min, max }: Props) {
+  // Disable the input when there's no onChange callback.
   const enabled = Boolean(onChange);
 
   return (
@@ -24,15 +31,6 @@ function NumberInput({ name, label, value, onChange, min, max }) {
     </label>
   );
 }
-
-NumberInput.propTypes = {
-  name: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
-  onChange: PropTypes.func,
-  min: PropTypes.number,
-  max: PropTypes.number,
-};
 
 NumberInput.defaultProps = {
   name: null,

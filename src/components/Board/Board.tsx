@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import Cell, { CELL_EMPTY, CELL_MINE } from '../Cell/Cell';
+
+import Cell, { CELL_EMPTY, CELL_MINE, TCell } from '../Cell/Cell';
 import {
   initBoard,
   allMinesFlagged,
   setCell,
   floodEmptyCells,
+  TCoordinate,
 } from './BoardHelpers';
 
 import './Board.scss';
@@ -15,6 +16,19 @@ export const GameState = Object.freeze({
   won: 'won',
   lost: 'lost',
 });
+
+type Props = {
+  restartFlag: boolean;
+  width: number;
+  height: number;
+  mines: number;
+  xray: boolean;
+  flags: number;
+  setFlags: (flags: number) => void;
+  setAlert: (alert: string) => void;
+  gameState: string;
+  setGameState: (state: string) => void;
+};
 
 export default function Board({
   restartFlag,
@@ -27,10 +41,10 @@ export default function Board({
   setAlert,
   gameState,
   setGameState,
-}) {
+}: Props) {
   const [board, setBoard] = useState(initBoard(width, height, mines));
 
-  const coordinateKey = (i, j) => `${i}_${j}`;
+  const coordinateKey = (c: TCoordinate) => `${c.row}_${c.cell}`;
 
   // Rebuild the board when the config changes, or when new game is started
   // (restart flag flips).
@@ -38,31 +52,31 @@ export default function Board({
     setBoard(initBoard(width, height, mines));
   }, [restartFlag, width, height, mines]);
 
-  const pressCell = (i, j) => {
+  const pressCell = (c: TCoordinate) => {
     // Ignore press on flagged and pressed cells.
-    const { flagged, pressed, value } = board[i][j];
+    const { flagged, pressed, value } = board[c.row][c.cell];
     if (flagged || pressed) return;
 
     switch (value) {
       case CELL_MINE:
         setGameState(GameState.lost);
-        setBoard(setCell(board, i, j, true, null, false));
+        setBoard(setCell(board, c, true, null, false));
         setAlert('game over');
         break;
 
       case CELL_EMPTY:
         // "Flood fill" empty cells.
-        setBoard(floodEmptyCells(board, i, j));
+        setBoard(floodEmptyCells(board, c));
         break;
 
       default:
         // Pressed a mine neighbour. Mark it as pressed.
-        setBoard(setCell(board, i, j, true, null, false));
+        setBoard(setCell(board, c, true, null, false));
     }
   };
 
-  const toggleFlag = (i, j) => {
-    const { flagged, pressed } = board[i][j];
+  const toggleFlag = (c: TCoordinate) => {
+    const { flagged, pressed } = board[c.row][c.cell];
 
     // Don't allow flagging pressed cells.
     if (pressed) return;
@@ -76,7 +90,7 @@ export default function Board({
     setAlert('');
     const flagsNew = flags + (flagged ? -1 : 1);
     setFlags(flagsNew);
-    const boardNew = setCell(board, i, j, false, null, !flagged);
+    const boardNew = setCell(board, c, false, null, !flagged);
     setBoard(boardNew);
     // Check if all mines are flagged correctly when all flags are used.
     if (flagsNew === mines && allMinesFlagged(boardNew)) {
@@ -85,45 +99,29 @@ export default function Board({
     }
   };
 
-  const renderCell = (i, j) => {
-    const onClick = (event) => {
+  const renderCell = (c: TCoordinate) => {
+    const onClick = (event: React.MouseEvent) => {
       if (gameState !== GameState.ongoing) return;
 
-      if (event.shiftKey) {
-        toggleFlag(i, j);
-      } else {
-        pressCell(i, j);
-      }
+      if (event.shiftKey) toggleFlag(c);
+      else pressCell(c);
     };
 
     return (
       <Cell
-        key={coordinateKey(i, j)}
-        cell={board[i][j]}
+        key={coordinateKey(c)}
+        cell={board[c.row][c.cell]}
         xray={xray}
         onClick={onClick}
       />
     );
   };
 
-  const renderRow = (row, i) => (
-    <div key={i} className="row">
-      {row.map((_, j) => renderCell(i, j))}
+  const renderRow = (row: TCell[], rowIndex: number) => (
+    <div key={rowIndex} className="row">
+      {row.map((_, cell) => renderCell({ row: rowIndex, cell }))}
     </div>
   );
 
   return <div className="board debossed">{board.map(renderRow)}</div>;
 }
-
-Board.propTypes = {
-  restartFlag: PropTypes.bool.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  mines: PropTypes.number.isRequired,
-  xray: PropTypes.bool.isRequired,
-  flags: PropTypes.number.isRequired,
-  setFlags: PropTypes.func.isRequired,
-  setAlert: PropTypes.func.isRequired,
-  gameState: PropTypes.string.isRequired,
-  setGameState: PropTypes.func.isRequired,
-};

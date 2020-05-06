@@ -1,11 +1,15 @@
 // A toggleable button.
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './StickyButton.scss';
 
-function StickyButton({ label, pressed, setPressed }) {
+type Props = {
+  label: string;
+  pressed: boolean;
+  setPressed: (p: boolean) => void;
+};
+function StickyButton({ label, pressed, setPressed }: Props) {
   const pressedClass = pressed ? 'debossed' : 'embossed';
 
   const onClick = () => setPressed(!pressed);
@@ -16,11 +20,5 @@ function StickyButton({ label, pressed, setPressed }) {
     </button>
   );
 }
-
-StickyButton.propTypes = {
-  label: PropTypes.string.isRequired,
-  pressed: PropTypes.bool.isRequired,
-  setPressed: PropTypes.func.isRequired,
-};
 
 export default StickyButton;

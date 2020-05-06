@@ -1,6 +1,6 @@
 # React minesweeper
 
-Run tests with `npm test` (After `npm i`)
+Run tests with `yarn test`
 
 ## Components
 
@@ -12,7 +12,7 @@ Run tests with `npm test` (After `npm i`)
 
   - Stats: Shows remaining flags, X-ray button and status message
 
-    - StickyButton: A togglable button, for controling X-ray mode
+    - StickyButton: A toggleable button, for controlling X-ray mode
 
   - Board: Game logic and rendering cells
 

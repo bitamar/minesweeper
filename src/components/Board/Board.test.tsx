@@ -17,7 +17,7 @@ describe('Board logic', () => {
 
     // Pressing the top left cell should press the empty cells and their
     // neighbors.
-    const newBoard = floodEmptyCells(board, 0, 0);
+    const newBoard = floodEmptyCells(board, { row: 0, cell: 0 });
 
     const expectedBoard = [
       [
