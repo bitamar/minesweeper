@@ -7,7 +7,7 @@ import './StickyButton.scss';
 type Props = {
   label: string;
   pressed: boolean;
-  setPressed: (p: boolean) => void;
+  setPressed: (pressed: boolean) => void;
 };
 function StickyButton({ label, pressed, setPressed }: Props) {
   const pressedClass = pressed ? 'debossed' : 'embossed';

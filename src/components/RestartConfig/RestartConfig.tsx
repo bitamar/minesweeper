@@ -10,20 +10,20 @@ const MIN_SIZE = 1;
 const MAX_SIZE = 300;
 
 // Default config
-export type TConfig = {
+export type Config = {
   width: number;
   height: number;
   mines: number;
 };
 
-export const initConfig: TConfig = Object.freeze({
+export const initConfig: Config = Object.freeze({
   width: 10,
   height: 10,
   mines: 15,
 });
 
 type Props = {
-  restart(config: TConfig): void;
+  restart(config: Config): void;
 };
 
 export default function RestartConfig({ restart }: Props) {
@@ -39,7 +39,7 @@ export default function RestartConfig({ restart }: Props) {
     if (input.value < input.min || input.value > input.max) return;
 
     const value = parseInt(input.value);
-    const newConfig: TConfig = { ...config };
+    const newConfig: Config = { ...config };
     // FIXME: How to assign to newConfig[input.name] in a typesafe way without listing all options?
     switch (input.name) {
       case 'width':

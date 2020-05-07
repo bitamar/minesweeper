@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import RestartConfig, {
-  TConfig,
+  Config,
   initConfig,
 } from '../RestartConfig/RestartConfig';
 import Board, { GameState } from '../Board/Board';
@@ -33,7 +33,7 @@ export default function () {
   const [xray, setXray] = useState(false);
 
   // Start a new game: Change restartFlag and reset other states.
-  const restart = (newConfig: TConfig) => {
+  const restart = (newConfig: Config) => {
     setRestartFlag(!restartFlag);
     setConfig(newConfig);
     setFlags(0);

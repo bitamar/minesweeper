@@ -1,20 +1,20 @@
-import { CELL_EMPTY, CELL_MINE, TCell } from '../Cell/Cell';
+import { CELL_EMPTY, CELL_MINE, TCell as Cell } from '../Cell/Cell';
 
-export type TCoordinate = { row: number; cell: number };
+export type Coordinate = { row: number; cell: number };
 
-type TBoard = TCell[][];
+type Board = Cell[][];
 
 // Run a callback on non-mine neighbors of a cell.
 function neighbors(
-  board: TBoard,
-  c: TCoordinate,
-  cellFn: (cell: TCell, c: TCoordinate) => void
+  board: Board,
+  { row, cell }: Coordinate,
+  cellFn: (cell: Cell, coordinate: Coordinate) => void
 ) {
   [-1, 0, 1].forEach((deltaRow) => {
     [-1, 0, 1].forEach((deltaCell) => {
       if (!deltaRow && !deltaCell) return;
 
-      const neighbor = { row: c.row + deltaRow, cell: c.cell + deltaCell };
+      const neighbor = { row: row + deltaRow, cell: cell + deltaCell };
 
       // Ignore coordinates out of bounds.
       if (!board[neighbor.row] || !board[neighbor.row][neighbor.cell]) return;
@@ -27,12 +27,7 @@ function neighbors(
 }
 
 // Create new board with random mines.
-export function initBoard(
-  width: number,
-  height: number,
-  mines: number
-): TBoard {
-  // FIXME: What's a nice way to init a matrix of objects?
+export function initBoard(width: number, height: number, mines: number): Board {
   const board = Array(height)
     .fill(null)
     .map(() =>
@@ -72,22 +67,22 @@ export function initBoard(
 
 // Return a copy of the board, with one cell changed.
 export function setCell(
-  board: TBoard,
-  c: TCoordinate,
+  board: Board,
+  { row, cell }: Coordinate,
   pressed: boolean,
   value: number | null,
   flagged: boolean
-): TBoard {
-  const newValue = value === null ? board[c.row][c.cell].value : value;
+): Board {
+  const newValue = value === null ? board[row][cell].value : value;
   const newBoard = [...board];
-  newBoard[c.row] = [...board[c.row]];
-  newBoard[c.row][c.cell] = { pressed, value: newValue, flagged };
+  newBoard[row] = [...board[row]];
+  newBoard[row][cell] = { pressed, value: newValue, flagged };
 
   return newBoard;
 }
 
 // Create a copy of the board.
-function copyBoard(board: TBoard): TBoard {
+function copyBoard(board: Board): Board {
   return board.map((row) =>
     row.map((cell) => ({
       pressed: cell.pressed,
@@ -98,26 +93,24 @@ function copyBoard(board: TBoard): TBoard {
 }
 
 // Revealing the neighbors of empty cells.
-export function floodEmptyCells(board: TBoard, initC: TCoordinate): TBoard {
+export function floodEmptyCells(board: Board, start: Coordinate): Board {
   const newBoard = copyBoard(board);
 
   // For each empty cell, adding all of its empty neighbors to a queue, and
   // repeating until the queue is empty.
   // Initialize the queue with the empty cell clicked.
-  const queue: TCoordinate[] = [initC];
+  const queue: Coordinate[] = [start];
   while (queue.length) {
-    const c = queue.shift();
-    // This condition is just to satisfy the compiler. The queue is only
-    // shifted when not empty.
-    if (!c) break;
+    const coordinate = queue.shift();
+    // This condition is just to prevent a "possibly undefined" warning. The
+    // queue is only shifted when not empty.
+    if (!coordinate) break;
 
-    if (newBoard[c.row][c.cell].pressed) {
-      continue;
-    }
+    if (newBoard[coordinate.row][coordinate.cell].pressed) continue;
 
-    newBoard[c.row][c.cell].pressed = true;
+    newBoard[coordinate.row][coordinate.cell].pressed = true;
 
-    neighbors(newBoard, c, (neighbor, neighborC) => {
+    neighbors(newBoard, coordinate, (neighbor, neighborCoordinate) => {
       if (neighbor.flagged) return;
 
       // Reveal cell neighbors.
@@ -125,15 +118,15 @@ export function floodEmptyCells(board: TBoard, initC: TCoordinate): TBoard {
       if (neighbor.value > CELL_EMPTY) neighbor.pressed = true;
 
       // Add empty cells to the flood queue.
-      if (neighbor.value === CELL_EMPTY) queue.push(neighborC);
+      if (neighbor.value === CELL_EMPTY) queue.push(neighborCoordinate);
     });
   }
   return newBoard;
 }
 
 // Checks that each cell is either not a mine or a flagged mine.
-export function allMinesFlagged(board: TBoard): boolean {
-  const cellFlaggedOk = ({ flagged, value }: TCell) =>
+export function allMinesFlagged(board: Board): boolean {
+  const cellFlaggedOk = ({ flagged, value }: Cell) =>
     value !== CELL_MINE || (value === CELL_MINE && flagged);
 
   return board.every((row) => row.every(cellFlaggedOk));
